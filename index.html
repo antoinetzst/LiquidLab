@@ -2,7 +2,10 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
     <link
     rel="manifest"
     href="./manifest.webmanifest">
@@ -59,14 +62,14 @@
 
 html {
     min-height: 100%;
+    background: #080d18;
 }
 
-
 body {
-
     margin: 0;
 
     min-height: 100vh;
+    min-height: 100dvh;
 
     font-family:
         -apple-system,
@@ -107,8 +110,29 @@ body {
 
     background-attachment: fixed;
 
-    padding: 28px;
+    padding-top:
+        max(
+            28px,
+            env(safe-area-inset-top)
+        );
 
+    padding-right:
+        max(
+            28px,
+            env(safe-area-inset-right)
+        );
+
+    padding-bottom:
+        max(
+            28px,
+            env(safe-area-inset-bottom)
+        );
+
+    padding-left:
+        max(
+            28px,
+            env(safe-area-inset-left)
+        );
 }
 
 
@@ -1775,11 +1799,31 @@ td {
 
 @media(max-width:850px) {
 
-    body {
+     body {
 
-        padding:
-            16px;
+        padding-top:
+            max(
+                16px,
+                env(safe-area-inset-top)
+            );
 
+        padding-right:
+            max(
+                16px,
+                env(safe-area-inset-right)
+            );
+
+        padding-bottom:
+            max(
+                16px,
+                env(safe-area-inset-bottom)
+            );
+
+        padding-left:
+            max(
+                16px,
+                env(safe-area-inset-left)
+            );
     }
 
 
