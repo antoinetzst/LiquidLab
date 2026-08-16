@@ -6,7 +6,7 @@ L'application fonctionne entièrement côté navigateur, sans serveur applicatif
 
 ## 🌐 Démo en ligne
 
-👉 [Ouvrir LiquidLab](https://antoine.github.io/liquidlab/)
+👉 [Ouvrir LiquidLab](https://antoinetzst.github.io/LiquidLab/)
 
 ## ✨ Fonctionnalités
 
