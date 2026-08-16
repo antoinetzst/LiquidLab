@@ -216,7 +216,29 @@ Le taux de nicotine affiché correspond à la **concentration théorique du liqu
 
 Aucun framework n'est nécessaire.
 
+## 🤖 Vibe coding
+
+LiquidLab a été **vibe codé** : une partie importante de sa conception, de son interface et de son code a été réalisée de manière itérative avec l'aide d'outils d'intelligence artificielle générative.
+
+Le projet a ensuite été ajusté, testé et adapté en fonction des besoins d'utilisation.
+
+Cette mention est ajoutée par souci de transparence sur la manière dont le projet a été développé.
+
 ## 📄 Licence
 
-Projet personnel.  
-Ajouter ici la licence souhaitée si le dépôt doit être distribué publiquement.
+LiquidLab est distribué sous **licence MIT**.
+
+La licence MIT est une licence open source permissive : elle autorise notamment l'utilisation, la copie, la modification, la distribution et l'utilisation commerciale du logiciel, sous réserve de conserver la notice de copyright et la licence.
+
+Pour que le dépôt soit clairement identifié comme open source sur GitHub, ajouter également un fichier `LICENSE` contenant le texte officiel de la licence MIT à la racine du projet.
+
+```text
+LiquidLab
+├── index.html
+├── README.md
+├── LICENSE
+├── manifest.webmanifest
+└── service-worker.js
+```
+
+SPDX : `MIT`
