@@ -4,6 +4,10 @@ LiquidLab est une petite webapp en **HTML / CSS / JavaScript pur** pour gérer s
 
 L'application fonctionne entièrement côté navigateur, sans serveur applicatif ni base de données distante.
 
+## 🌐 Démo en ligne
+
+👉 [Ouvrir LiquidLab](https://antoine.github.io/liquidlab/)
+
 ## ✨ Fonctionnalités
 
 - 📦 Gestion du stock de base neutre
