@@ -3066,7 +3066,7 @@ td {
         sous licence MIT.
         Ce site a été développé avec l'aide de l'intelligence artificielle.
     </p>
-        <p>LiquidLab 2.3.1</p>
+        <p>LiquidLab 2.3.2</p>
 
 </footer>
     
@@ -3195,53 +3195,96 @@ function uid() {
     );
 
 }
+    
+function raccourcirURL(urlLongue) {
 
-async function raccourcirURL(urlLongue) {
+    return new Promise((resolve, reject) => {
 
-    const response =
-        await fetch(
-            "https://cleanuri.com/api/v1/shorten",
-            {
-                method: "POST",
+        const callbackName =
+            "liquidLabShortener_" +
+            Date.now();
 
-                headers: {
-                    "Content-Type":
-                        "application/x-www-form-urlencoded"
-                },
+        const script =
+            document.createElement("script");
 
-                body:
-                    "url=" +
-                    encodeURIComponent(
-                        urlLongue
+
+        window[callbackName] =
+            function(data) {
+
+                delete window[callbackName];
+
+                script.remove();
+
+
+                if (
+                    data &&
+                    data.shorturl
+                ) {
+
+                    resolve(
+                        data.shorturl
+                    );
+
+                }
+
+                else {
+
+                    reject(
+                        new Error(
+                            data?.errormessage ||
+                            "Impossible de créer le lien court"
+                        )
+                    );
+
+                }
+
+            };
+
+
+        script.onerror =
+            function() {
+
+                delete window[callbackName];
+
+                script.remove();
+
+                reject(
+                    new Error(
+                        "Impossible de contacter is.gd"
                     )
-            }
+                );
+
+            };
+
+
+        script.src =
+
+            "https://is.gd/create.php"
+
+            +
+
+            "?format=json"
+
+            +
+
+            "&callback=" +
+            encodeURIComponent(
+                callbackName
+            )
+
+            +
+
+            "&url=" +
+            encodeURIComponent(
+                urlLongue
+            );
+
+
+        document.head.appendChild(
+            script
         );
 
-
-    if (!response.ok) {
-
-        throw new Error(
-            `CleanURI : erreur HTTP ${response.status}`
-        );
-
-    }
-
-
-    const data =
-        await response.json();
-
-
-    if (!data.result_url) {
-
-        throw new Error(
-            data.error ||
-            "CleanURI n'a pas retourné de lien court."
-        );
-
-    }
-
-
-    return data.result_url;
+    });
 
 }
 
