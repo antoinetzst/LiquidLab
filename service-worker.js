@@ -1,4 +1,4 @@
-const CACHE_NAME = "liquidlab-v1.12";
+const CACHE_NAME = "liquidlab-v1.13";
 
 const FILES_TO_CACHE = [
     "./",
