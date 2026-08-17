@@ -12,7 +12,7 @@
 */
 
 const APP_VERSION =
-    "2.3.1";
+    "2.3.2";
 
 
 const CACHE_NAME =
