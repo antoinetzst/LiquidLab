@@ -7358,25 +7358,20 @@ async function copyTransferLink() {
         );
 
 
-    let text;
-
+    /*
+        Si LiquidLab est ouvert
+        depuis GitHub Pages
+    */
 
     if (
-
-        location.protocol ===
-        "http:"
-
-        ||
-
-        location.protocol ===
-        "https:"
-
+        location.protocol === "http:" ||
+        location.protocol === "https:"
     ) {
 
-        text =
+        const longUrl =
 
             location.href
-            .split("#")[0]
+                .split("#")[0]
 
             +
 
@@ -7386,38 +7381,97 @@ async function copyTransferLink() {
 
             encoded;
 
+
+        toast(
+            "Création du lien court…"
+        );
+
+
+        try {
+
+            /*
+                Tente de raccourcir
+            */
+
+            const shortUrl =
+                await raccourcirURL(
+                    longUrl
+                );
+
+
+            /*
+                Copie le lien court
+            */
+
+            if (
+                await copyText(
+                    shortUrl
+                )
+            ) {
+
+                toast(
+                    "Lien court copié"
+                );
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Raccourcissement impossible :",
+                error
+            );
+
+
+            /*
+                Fallback :
+                copie le lien long
+            */
+
+            if (
+                await copyText(
+                    longUrl
+                )
+            ) {
+
+                toast(
+                    "Lien long copié"
+                );
+
+            }
+
+        }
+
+
+        return;
+
     }
 
-    else {
 
-        text =
+    /*
+        Si LiquidLab est encore
+        ouvert en file://
+    */
 
-            TRANSFER_PREFIX
+    const transferCode =
 
-            +
+        TRANSFER_PREFIX
 
-            encoded;
+        +
 
-    }
+        encoded;
 
 
     if (
         await copyText(
-            text
+            transferCode
         )
     ) {
 
         toast(
-            location.protocol ===
-            "file:"
-
-            ?
-
             "Code de transfert copié"
-
-            :
-
-            "Lien de transfert copié"
         );
 
     }
