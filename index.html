@@ -1951,6 +1951,28 @@ td {
     box-shadow: 0 0 10px var(--red);
 }
 
+.order-date {
+    font-size: 30px;
+    font-weight: 850;
+    letter-spacing: -1px;
+    line-height: 1.15;
+}
+
+.order-date.bad {
+    color: var(--red);
+}
+
+.order-date.warning {
+    color: var(--orange);
+}
+
+.settings-hint {
+    margin: -6px 0 14px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
 .settings-group-title {
     margin: 18px 0 10px;
     color: #dce5f7;
@@ -2942,6 +2964,210 @@ td {
 
 
 
+<!-- ---------- Commande ---------- -->
+
+<div class="card glass span-7">
+
+    <div class="card-title">
+
+        <h2>
+            Prochaine commande
+        </h2>
+
+        <div class="icon-box">
+            🛒
+        </div>
+
+    </div>
+
+
+    <div
+        class="order-date"
+        id="orderHeadline">
+        —
+    </div>
+
+
+    <div
+        class="stock-info"
+        id="orderSubline">
+    </div>
+
+
+    <div id="orderNotice"></div>
+
+
+    <div id="orderDetails">
+
+        <div class="settings-group-title">
+            Tes stocks tiennent jusqu'au…
+        </div>
+
+        <div
+            class="result-box"
+            id="orderCoverage">
+        </div>
+
+
+        <div class="settings-group-title">
+            Contenu de la commande
+        </div>
+
+        <div
+            class="result-box"
+            id="orderLines">
+        </div>
+
+
+        <button
+            class="btn btn-primary full"
+            style="margin-top:15px"
+            onclick="placeOrder()">
+
+            🛒 J'ai passé la commande
+
+        </button>
+
+    </div>
+
+
+    <div class="inline-form">
+
+        <div class="field">
+
+            <label>
+                Liquide déjà préparé (ml)
+            </label>
+
+            <input
+                id="readyLiquidInput"
+                type="number"
+                inputmode="decimal"
+                step="1"
+                min="0">
+
+        </div>
+
+
+        <button
+            class="btn btn-secondary"
+            onclick="setReadyLiquid()">
+
+            Corriger
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- ---------- Épargne ---------- -->
+
+<div class="card glass span-5">
+
+    <div class="card-title">
+
+        <h2>
+            Épargne
+        </h2>
+
+        <div class="icon-box">
+            🐷
+        </div>
+
+    </div>
+
+
+    <div
+        class="amount-due"
+        id="savingsAmount">
+
+        0,00 €
+
+    </div>
+
+
+    <div class="stock-info">
+        Chaque somme reportée s'ajoute ici.
+        Une commande passée en est retirée.
+    </div>
+
+
+    <div
+        class="result-box"
+        id="savingsProjection">
+    </div>
+
+
+    <div class="inline-form">
+
+        <div class="field">
+
+            <label>
+                Épargne actuelle (€)
+            </label>
+
+            <input
+                id="savingsInput"
+                type="number"
+                inputmode="decimal"
+                step="0.01">
+
+        </div>
+
+
+        <button
+            class="btn btn-secondary"
+            onclick="setSavings()">
+
+            Mettre à jour
+
+        </button>
+
+    </div>
+
+
+    <div class="inline-form">
+
+        <div class="field">
+
+            <label>
+                Prix réel de la commande (€)
+            </label>
+
+            <input
+                id="orderPriceInput"
+                type="number"
+                inputmode="decimal"
+                step="0.01"
+                min="0">
+
+        </div>
+
+
+        <button
+            class="btn btn-secondary"
+            onclick="setOrderPrice()">
+
+            Valider
+
+        </button>
+
+    </div>
+
+
+    <div
+        class="settings-hint"
+        style="margin-top:8px"
+        id="orderPriceHint">
+    </div>
+
+</div>
+
+
+
 <!-- ---------- Journal ---------- -->
 
 <div class="card glass span-7">
@@ -3076,6 +3302,46 @@ td {
         <div class="field">
             <label>Durée de vie (ml)</label>
             <input id="setBatteryLifeMl" type="number" inputmode="decimal" step="10" min="1">
+        </div>
+    </div>
+
+
+    <div class="settings-group-title">📈 Rythme de consommation</div>
+
+    <div class="field">
+        <label>Rythme indiqué (ml / jour)</label>
+        <input id="setManualRate" type="number" inputmode="decimal" step="0.1" min="0" placeholder="Ex : 3">
+    </div>
+
+    <div class="settings-hint" id="autoRateHint"></div>
+
+    <div class="checkbox-row">
+        <input id="setForceManualRate" type="checkbox">
+        <label for="setForceManualRate">Toujours utiliser le rythme indiqué</label>
+    </div>
+
+
+    <div class="settings-group-title">🛒 Commande</div>
+
+    <div class="two-cols keep">
+        <div class="field">
+            <label>Livraison (jours)</label>
+            <input id="setDeliveryDays" type="number" inputmode="numeric" step="1" min="0">
+        </div>
+        <div class="field">
+            <label>Marge (jours)</label>
+            <input id="setBufferDays" type="number" inputmode="numeric" step="1" min="0">
+        </div>
+    </div>
+
+    <div class="two-cols keep">
+        <div class="field">
+            <label>Commander pour (jours)</label>
+            <input id="setOrderCoverDays" type="number" inputmode="numeric" step="1" min="1">
+        </div>
+        <div class="field">
+            <label>Frais de port (€)</label>
+            <input id="setShippingCost" type="number" inputmode="decimal" step="0.01" min="0">
         </div>
     </div>
 
@@ -3218,8 +3484,9 @@ td {
 
     <div class="data-action-description">
 
-        Copie tes stocks, tes arômes
-        et ton historique dans le presse-papiers.
+        Copie tes stocks, tes arômes, ton historique
+        et ton suivi (recharges, résistances, reports, prix)
+        dans le presse-papiers.
 
     </div>
 
@@ -3574,7 +3841,7 @@ td {
         sous licence MIT.
         Ce site a été développé avec l'aide de l'intelligence artificielle.
     </p>
-        <p>LiquidLab 2.4.0</p>
+        <p>LiquidLab 2.5.0</p>
 
 </footer>
     
@@ -3592,6 +3859,10 @@ const STORAGE_KEY =
 
 const TRANSFER_PREFIX =
     "LIQUIDLAB2:";
+
+
+const APP_VERSION =
+    "2.5.0";
 
 
 /*
@@ -3678,6 +3949,25 @@ const DEFAULT_USAGE = {
     coilLifeMl: 30,
 
     coilStock: 0,
+
+    /* Rythme indiqué (ml/jour) : utilisé quand
+       la moyenne mesurée n'est pas disponible,
+       ou toujours si forceManualRate. */
+    manualMlPerDay: 0,
+    forceManualRate: false,
+
+    /* Liquide déjà préparé, pas encore vapé */
+    readyLiquidMl: 0,
+
+    /* Commande */
+    deliveryDays: 3,
+    bufferDays: 3,
+    orderCoverDays: 30,
+    shippingCost: 0,
+    orderPriceOverride: null,
+
+    /* Épargne */
+    savings: 0,
 
     prices: {
 
@@ -4017,7 +4307,7 @@ function normalizeUsage(input) {
     }
 
     const types =
-        ["refill", "coil", "report"];
+        ["refill", "coil", "report", "order"];
 
     return {
 
@@ -4029,6 +4319,39 @@ function normalizeUsage(input) {
 
         coilStock:
             Math.floor(num(u.coilStock, 0)),
+
+        manualMlPerDay:
+            num(u.manualMlPerDay, 0),
+
+        forceManualRate:
+            u.forceManualRate === true,
+
+        readyLiquidMl:
+            num(u.readyLiquidMl, 0),
+
+        deliveryDays:
+            num(u.deliveryDays, DEFAULT_USAGE.deliveryDays),
+
+        bufferDays:
+            num(u.bufferDays, DEFAULT_USAGE.bufferDays),
+
+        orderCoverDays:
+            num(u.orderCoverDays, DEFAULT_USAGE.orderCoverDays, 1),
+
+        shippingCost:
+            num(u.shippingCost, 0),
+
+        orderPriceOverride:
+            u.orderPriceOverride === null ||
+            u.orderPriceOverride === undefined ||
+            u.orderPriceOverride === ""
+            ? null
+            : num(u.orderPriceOverride, null),
+
+        savings:
+            Number.isFinite(Number(u.savings))
+            ? Number(u.savings)
+            : 0,
 
         prices,
 
@@ -4059,7 +4382,15 @@ function normalizeUsage(input) {
 
                     amount: num(e.amount, 0),
 
-                    fromStock: e.fromStock === true
+                    fromStock: e.fromStock === true,
+
+                    readyUsed: num(e.readyUsed, 0),
+
+                    savingsApplied: e.savingsApplied === true,
+
+                    addedBaseMl: num(e.addedBaseMl, 0),
+                    addedBoosters: num(e.addedBoosters, 0),
+                    addedCoils: num(e.addedCoils, 0)
 
                 }))
                 .sort((a, b) =>
@@ -7265,6 +7596,21 @@ function finishMix(
         currentMix.aromaMl;
 
 
+    /*
+        Liquide prêt à vaper
+        (suivi des commandes)
+    */
+
+    if (
+        status === "Conservé"
+    ) {
+
+        data.usage.readyLiquidMl +=
+            Number(currentMix.finalVolume) || 0;
+
+    }
+
+
 
     /*
         HISTORY
@@ -7751,7 +8097,10 @@ function createBackupObject() {
             "LiquidLab",
 
         backupVersion:
-            2,
+            3,
+
+        appVersion:
+            APP_VERSION,
 
         exportedAt:
             new Date()
@@ -8456,6 +8805,28 @@ function parseImportInput(
 ========================================================= */
 
 
+function backupHasUsage(
+    backup
+) {
+
+    const usage =
+        backup &&
+        backup.data &&
+        backup.data.usage;
+
+    return Boolean(
+        usage &&
+        typeof usage === "object" &&
+        (
+            Array.isArray(usage.events) ||
+            usage.prices
+        )
+    );
+
+}
+
+
+
 function validateBackup(
     backup
 ) {
@@ -8500,6 +8871,24 @@ function showImportPreview(
         normalizeData(
             backup.data
         );
+
+
+    /*
+        Une sauvegarde faite avec une version
+        antérieure à 2.4.0 ne contient pas
+        de données de suivi.
+    */
+
+    const hasUsage =
+        backupHasUsage(
+            backup
+        );
+
+    const countType =
+        type =>
+            imported.usage.events
+                .filter(e => e.type === type)
+                .length;
 
 
     const exportDate =
@@ -8605,19 +8994,47 @@ function showImportPreview(
             </div>
 
 
-            <div class="result-row">
+            ${
+                hasUsage
 
-                <span class="muted">
-                    Suivi (recharges, résistances…)
-                </span>
+                ?
 
-                <strong>
+                `
+                <div class="result-row">
+                    <span class="muted">Recharges suivies</span>
+                    <strong>${countType("refill")}</strong>
+                </div>
 
-                    ${imported.usage.events.length}
+                <div class="result-row">
+                    <span class="muted">Changements de résistance</span>
+                    <strong>${countType("coil")}</strong>
+                </div>
 
-                </strong>
+                <div class="result-row">
+                    <span class="muted">Reports</span>
+                    <strong>${countType("report")}</strong>
+                </div>
 
-            </div>
+                <div class="result-row">
+                    <span class="muted">Résistances en stock</span>
+                    <strong>${imported.usage.coilStock}</strong>
+                </div>
+
+                <div class="result-row">
+                    <span class="muted">Épargne</span>
+                    <strong>${formatEuro(imported.usage.savings)}</strong>
+                </div>
+                `
+
+                :
+
+                `
+                <div class="result-row">
+                    <span class="muted">Suivi</span>
+                    <strong class="warning">absent</strong>
+                </div>
+                `
+            }
 
 
             ${
@@ -8654,12 +9071,34 @@ function showImportPreview(
         </div>
 
 
-        <div class="notice warning-notice">
+        ${
+            hasUsage
 
-            Les données actuellement enregistrées
-            seront remplacées.
+            ?
 
-        </div>
+            `
+            <div class="notice warning-notice">
+
+                Les données actuellement enregistrées
+                seront remplacées.
+
+            </div>
+            `
+
+            :
+
+            `
+            <div class="notice warning-notice">
+
+                Cette sauvegarde ne contient pas de suivi
+                (elle a été faite avec une version antérieure
+                à LiquidLab 2.4).
+                Les stocks, arômes et l'historique seront remplacés ;
+                <strong>ton suivi actuel sera conservé</strong>.
+
+            </div>
+            `
+        }
 
 
         <div class="modal-actions">
@@ -8717,10 +9156,26 @@ function confirmImport() {
     }
 
 
+    const currentUsage =
+        data.usage;
+
+
     data =
         normalizeData(
             pendingImport.data
         );
+
+
+    if (
+        !backupHasUsage(
+            pendingImport
+        )
+    ) {
+
+        data.usage =
+            currentUsage;
+
+    }
 
 
     saveData();
@@ -9118,24 +9573,7 @@ function formatDuration(
     - batterie : prix / durée de vie
 */
 
-function getUnitCosts() {
-
-    const u =
-        data.usage;
-
-    const p =
-        u.prices;
-
-
-    const basePerMl =
-        p.basePrice / p.baseBottleMl;
-
-    const aromaPerMl =
-        p.aromaPrice / p.aromaBottleMl;
-
-    const boosterUnit =
-        p.boosterPackPrice / p.boosterPackCount;
-
+function getRecipe() {
 
     const lastMix =
 
@@ -9151,9 +9589,7 @@ function getUnitCosts() {
         );
 
 
-    const recipe =
-
-        lastMix
+    return lastMix
 
         ?
 
@@ -9177,6 +9613,33 @@ function getUnitCosts() {
             label:
                 "la recette par défaut (180 ml base, 4 boosters, 30 ml arôme)"
         };
+
+}
+
+
+
+function getUnitCosts() {
+
+    const u =
+        data.usage;
+
+    const p =
+        u.prices;
+
+
+    const basePerMl =
+        p.basePrice / p.baseBottleMl;
+
+    const aromaPerMl =
+        p.aromaPrice / p.aromaBottleMl;
+
+    const boosterUnit =
+        p.boosterPackPrice / p.boosterPackCount;
+
+
+
+    const recipe =
+        getRecipe();
 
 
     const liquid =
@@ -9293,7 +9756,7 @@ function getUsageStats() {
             new Date(e.date) >= windowStart
         );
 
-    let mlPerDay = null;
+    let autoMlPerDay = null;
 
     if (recentRefills.length >= 3) {
 
@@ -9303,8 +9766,39 @@ function getUsageStats() {
         const span =
             Math.max(1, daysBetween(oldest.date));
 
-        mlPerDay =
+        autoMlPerDay =
             recentRefills.reduce((t, e) => t + e.ml, 0) / span;
+
+    }
+
+
+    const manualMlPerDay =
+        u.manualMlPerDay > 0
+        ? u.manualMlPerDay
+        : null;
+
+    let mlPerDay = null;
+
+    let rateSource = null;
+
+    if (u.forceManualRate && manualMlPerDay) {
+
+        mlPerDay = manualMlPerDay;
+        rateSource = "manual";
+
+    }
+
+    else if (autoMlPerDay) {
+
+        mlPerDay = autoMlPerDay;
+        rateSource = "auto";
+
+    }
+
+    else if (manualMlPerDay) {
+
+        mlPerDay = manualMlPerDay;
+        rateSource = "manual";
 
     }
 
@@ -9370,6 +9864,8 @@ function getUsageStats() {
         lives,
         averageLife,
         mlPerDay,
+        autoMlPerDay,
+        rateSource,
         daysLeft,
         lastReport,
         due
@@ -9406,10 +9902,21 @@ function logRefill(
     const c =
         getUnitCosts();
 
+    const readyUsed =
+        Math.min(
+            data.usage.readyLiquidMl,
+            ml
+        );
+
+    data.usage.readyLiquidMl -=
+        readyUsed;
+
     data.usage.events.unshift({
 
         id: uid(),
         type: "refill",
+
+        readyUsed,
         date: new Date().toISOString(),
 
         ml,
@@ -9536,7 +10043,7 @@ function markReported() {
     if (
         !confirm(
             `Confirmer le report de ${formatEuro(due.amount)} ?\n\n` +
-            "Le compteur repartira de zéro."
+            "Le montant sera ajouté à ton épargne et le compteur repartira de zéro."
         )
     ) {
 
@@ -9558,9 +10065,14 @@ function markReported() {
 
         amount: due.amount,
 
-        fromStock: false
+        fromStock: false,
+
+        savingsApplied: true
 
     });
+
+    data.usage.savings +=
+        due.amount;
 
     saveData();
 
@@ -9591,16 +10103,54 @@ function removeUsageEvent(
     const [removed] =
         events.splice(index, 1);
 
+    const u =
+        data.usage;
+
     if (
         removed.type === "coil" &&
         removed.fromStock
     ) {
 
-        data.usage.coilStock += 1;
+        u.coilStock += 1;
+
+    }
+
+    if (removed.type === "refill") {
+
+        u.readyLiquidMl +=
+            removed.readyUsed;
+
+    }
+
+    if (
+        removed.type === "report" &&
+        removed.savingsApplied
+    ) {
+
+        u.savings -=
+            removed.amount;
+
+    }
+
+    if (removed.type === "order") {
+
+        u.savings +=
+            removed.amount;
+
+        data.baseMl =
+            Math.max(0, data.baseMl - removed.addedBaseMl);
+
+        data.boosters =
+            Math.max(0, data.boosters - removed.addedBoosters);
+
+        u.coilStock =
+            Math.max(0, u.coilStock - removed.addedCoils);
 
     }
 
     saveData();
+
+    renderStocks();
 
     renderUsage();
 
@@ -9628,7 +10178,8 @@ function undoLastUsageEvent() {
     const labels = {
         refill: `la recharge de ${formatNumber(last.ml)} ml`,
         coil: "le changement de résistance",
-        report: `le report de ${formatEuro(last.amount)}`
+        report: `le report de ${formatEuro(last.amount)}`,
+        order: `la commande de ${formatEuro(last.amount)}`
     };
 
     if (
@@ -9693,6 +10244,15 @@ function saveUsageSettings() {
 
     const read = (id, min) => {
 
+        if (
+            id === "setManualRate" &&
+            String(document.getElementById(id).value).trim() === ""
+        ) {
+
+            return 0;
+
+        }
+
         const value =
             Number(
                 String(
@@ -9725,7 +10285,14 @@ function saveUsageSettings() {
         coilPackCount: ["setCoilPackCount", 1],
 
         batteryPrice: ["setBatteryPrice", 0],
-        batteryLifeMl: ["setBatteryLifeMl", 1]
+        batteryLifeMl: ["setBatteryLifeMl", 1],
+
+        manualMlPerDay: ["setManualRate", 0],
+
+        deliveryDays: ["setDeliveryDays", 0],
+        bufferDays: ["setBufferDays", 0],
+        orderCoverDays: ["setOrderCoverDays", 1],
+        shippingCost: ["setShippingCost", 0]
 
     };
 
@@ -9760,6 +10327,24 @@ function saveUsageSettings() {
     for (const key of Object.keys(u.prices)) {
 
         u.prices[key] = values[key];
+
+    }
+
+    u.manualMlPerDay = values.manualMlPerDay;
+    u.deliveryDays = values.deliveryDays;
+    u.bufferDays = values.bufferDays;
+    u.orderCoverDays = values.orderCoverDays;
+    u.shippingCost = values.shippingCost;
+
+    u.forceManualRate =
+        document.getElementById("setForceManualRate").checked;
+
+    if (
+        u.forceManualRate &&
+        !(u.manualMlPerDay > 0)
+    ) {
+
+        u.forceManualRate = false;
 
     }
 
@@ -9808,6 +10393,15 @@ function renderUsageSettings() {
 
     set("setBatteryPrice", p.batteryPrice);
     set("setBatteryLifeMl", p.batteryLifeMl);
+
+    set("setManualRate", u.manualMlPerDay > 0 ? u.manualMlPerDay : "");
+    set("setDeliveryDays", u.deliveryDays);
+    set("setBufferDays", u.bufferDays);
+    set("setOrderCoverDays", u.orderCoverDays);
+    set("setShippingCost", u.shippingCost);
+
+    document.getElementById("setForceManualRate").checked =
+        u.forceManualRate;
 
 }
 
@@ -9933,10 +10527,10 @@ function renderUsage() {
         +
 
         resultRow(
-            "Rythme (30 derniers jours)",
+            "Rythme de consommation",
             s.mlPerDay
-            ? `${formatNumber(s.mlPerDay)} ml/jour`
-            : "pas encore assez de données"
+            ? `${formatNumber(s.mlPerDay)} ml/jour (${s.rateSource === "auto" ? "mesuré" : "indiqué"})`
+            : "à indiquer dans les réglages"
         )
 
         +
@@ -9988,6 +10582,18 @@ function renderUsage() {
 
     }
 
+    if (!s.mlPerDay) {
+
+        advice.push(`
+            <div class="notice">
+                📈 Indique ton <strong>rythme de consommation</strong>
+                (ml / jour) dans « Réglages & prix » pour estimer
+                la date de changement et la prochaine commande.
+            </div>
+        `);
+
+    }
+
     if (u.coilStock <= 1) {
 
         advice.push(`
@@ -10023,15 +10629,34 @@ function renderUsage() {
         advice.join("");
 
 
+    /* ----- Commande & épargne ----- */
+
+    const plan =
+        renderOrder(s);
+
+
+    /* ----- Rythme mesuré (réglages) ----- */
+
+    setText(
+        "autoRateHint",
+        s.autoMlPerDay
+        ? `Rythme mesuré sur 30 jours : ${formatNumber(s.autoMlPerDay)} ml/jour. Le rythme indiqué ne sert que s'il n'y a pas assez de recharges, sauf si tu coches la case.`
+        : "Pas encore assez de recharges pour mesurer ton rythme (3 minimum sur 30 jours) : le rythme indiqué est utilisé."
+    );
+
+
     /* ----- Badge de l'onglet ----- */
 
     const badge =
         document.getElementById("usageBadge");
 
+    const orderSoon =
+        plan && plan.orderNow;
+
     badge.className =
         "tab-badge" +
-        (s.wear >= .8 ? " show" : "") +
-        (s.wear >= 1 ? " over" : "");
+        (s.wear >= .8 || orderSoon ? " show" : "") +
+        (s.wear >= 1 || orderSoon ? " over" : "");
 
 
     /* ----- À reporter ----- */
@@ -10108,6 +10733,807 @@ function renderUsage() {
 
 
 
+/* ---------- Commande & épargne ---------- */
+
+
+/*
+    Plan de commande :
+
+    1. Couverture de chaque article en ml de liquide
+       (liquide prêt + ce que le stock permet de préparer
+       avec la recette de la dernière préparation ;
+       résistances : vie restante + stock).
+    2. Date de rupture = article le plus court.
+    3. Date de commande = rupture − livraison − marge.
+    4. Quantités : de quoi tenir jusqu'à la livraison
+       puis "Commander pour" jours, arrondi aux
+       flacons / lots.
+*/
+
+function getOrderPlan(
+    stats = getUsageStats()
+) {
+
+    const u =
+        data.usage;
+
+    const p =
+        u.prices;
+
+    const r =
+        stats.mlPerDay;
+
+    if (!r) {
+
+        return null;
+
+    }
+
+
+    const recipe =
+        getRecipe();
+
+    const ratio = {
+        base: recipe.base / recipe.volume,
+        boosters: recipe.boosters / recipe.volume,
+        aroma: recipe.aroma / recipe.volume
+    };
+
+    const stock = {
+        base: data.baseMl,
+        boosters: data.boosters,
+        aroma: data.aromas.reduce((t, a) => t + a.stockMl, 0)
+    };
+
+    const ready =
+        u.readyLiquidMl;
+
+    const makeable =
+        key =>
+            ratio[key] > 0
+            ? stock[key] / ratio[key]
+            : Infinity;
+
+
+    const items = [
+
+        {
+            key: "base",
+            label: "💧 Base neutre",
+            coverMl: ready + makeable("base")
+        },
+
+        {
+            key: "boosters",
+            label: "⚡ Boosters",
+            coverMl: ready + makeable("boosters")
+        },
+
+        {
+            key: "aroma",
+            label: "🍓 Arôme",
+            coverMl: ready + makeable("aroma")
+        },
+
+        {
+            key: "coils",
+            label: "🔧 Résistances",
+            coverMl: stats.remainingMl + u.coilStock * u.coilLifeMl
+        }
+
+    ]
+    .map(item => ({
+        ...item,
+        days: item.coverMl / r
+    }));
+
+
+    const limiting =
+        items.reduce((a, b) => b.days < a.days ? b : a);
+
+    const exhaustDays =
+        limiting.days;
+
+    const orderInDays =
+        exhaustDays - u.deliveryDays - u.bufferDays;
+
+    const orderNow =
+        orderInDays < 1;
+
+    const daysUntilOrder =
+        Math.max(0, Math.floor(orderInDays));
+
+    const ruptureBeforeDelivery =
+        exhaustDays < u.deliveryDays;
+
+
+    /* ----- Quantités ----- */
+
+    const horizonDays =
+        daysUntilOrder + u.deliveryDays + u.orderCoverDays;
+
+    const liquidNeed =
+        Math.max(0, r * horizonDays - ready);
+
+    const EPS = 0.01;
+
+    const packs =
+        (need, size) =>
+            need > EPS
+            ? Math.ceil(need / size - 1e-9)
+            : 0;
+
+
+    const baseUnits =
+        packs(liquidNeed * ratio.base - stock.base, p.baseBottleMl);
+
+    const boosterPacks =
+        packs(liquidNeed * ratio.boosters - stock.boosters, p.boosterPackCount);
+
+    const aromaUnits =
+        packs(liquidNeed * ratio.aroma - stock.aroma, p.aromaBottleMl);
+
+    const coilsNeeded =
+        Math.ceil(
+            (r * horizonDays - stats.remainingMl) / u.coilLifeMl - 1e-9
+        )
+        - u.coilStock;
+
+    const coilPacks =
+        packs(coilsNeeded, p.coilPackCount);
+
+
+    const lines = [
+
+        {
+            key: "base",
+            label: "💧 Base neutre",
+            units: baseUnits,
+            detail: `${baseUnits} × ${formatNumber(p.baseBottleMl)} ml`,
+            price: baseUnits * p.basePrice,
+            addBaseMl: baseUnits * p.baseBottleMl
+        },
+
+        {
+            key: "boosters",
+            label: "⚡ Boosters",
+            units: boosterPacks,
+            detail: `${boosterPacks} lot${boosterPacks > 1 ? "s" : ""} de ${p.boosterPackCount}`,
+            price: boosterPacks * p.boosterPackPrice,
+            addBoosters: boosterPacks * p.boosterPackCount
+        },
+
+        {
+            key: "aroma",
+            label: "🍓 Arôme (au choix)",
+            units: aromaUnits,
+            detail: `${aromaUnits} × ${formatNumber(p.aromaBottleMl)} ml`,
+            price: aromaUnits * p.aromaPrice
+        },
+
+        {
+            key: "coils",
+            label: "🔧 Résistances",
+            units: coilPacks,
+            detail: `${coilPacks} lot${coilPacks > 1 ? "s" : ""} de ${p.coilPackCount}`,
+            price: coilPacks * p.coilPackPrice,
+            addCoils: coilPacks * p.coilPackCount
+        }
+
+    ];
+
+
+    const subtotal =
+        lines.reduce((t, l) => t + l.price, 0);
+
+    const shipping =
+        subtotal > 0
+        ? u.shippingCost
+        : 0;
+
+
+    return {
+
+        rate: r,
+        items,
+        limiting,
+        exhaustDays,
+        exhaustDate: new Date(Date.now() + exhaustDays * DAY_MS),
+        orderNow,
+        daysUntilOrder,
+        orderDate: new Date(Date.now() + daysUntilOrder * DAY_MS),
+        ruptureBeforeDelivery,
+        horizonDays,
+        lines,
+        subtotal,
+        shipping,
+        total: subtotal + shipping
+
+    };
+
+}
+
+
+
+function getSavingsProjection(
+    stats,
+    plan
+) {
+
+    const u =
+        data.usage;
+
+    const costPerDay =
+        stats.mlPerDay
+        ? stats.mlPerDay * getUnitCosts().total
+        : 0;
+
+    const days =
+        plan ? plan.daysUntilOrder : 0;
+
+    const untilOrder =
+        costPerDay * days;
+
+    const projected =
+        u.savings + stats.due.amount + untilOrder;
+
+    const orderPrice =
+        u.orderPriceOverride !== null
+        ? u.orderPriceOverride
+        : (plan ? plan.total : null);
+
+    return {
+
+        costPerDay,
+        untilOrder,
+        projected,
+        orderPrice,
+
+        balance:
+            orderPrice !== null
+            ? projected - orderPrice
+            : null
+
+    };
+
+}
+
+
+
+function formatDay(
+    date
+) {
+
+    return date.toLocaleDateString(
+        "fr-FR",
+        {
+            weekday: "short",
+            day: "numeric",
+            month: "short"
+        }
+    );
+
+}
+
+
+
+function readNumberInput(
+    id
+) {
+
+    const raw =
+        String(
+            document.getElementById(id).value
+        )
+        .trim()
+        .replace(",", ".");
+
+    if (raw === "") {
+
+        return null;
+
+    }
+
+    const value =
+        Number(raw);
+
+    return Number.isFinite(value)
+        ? value
+        : NaN;
+
+}
+
+
+
+function setReadyLiquid() {
+
+    const value =
+        readNumberInput("readyLiquidInput");
+
+    if (
+        value === null ||
+        Number.isNaN(value) ||
+        value < 0
+    ) {
+
+        toast("Indique une quantité en ml");
+
+        return;
+
+    }
+
+    data.usage.readyLiquidMl =
+        value;
+
+    document.getElementById("readyLiquidInput").value = "";
+
+    saveData();
+
+    renderUsage();
+
+    toast(`Liquide prêt : ${formatNumber(value)} ml`);
+
+}
+
+
+
+function setSavings() {
+
+    const value =
+        readNumberInput("savingsInput");
+
+    if (
+        value === null ||
+        Number.isNaN(value)
+    ) {
+
+        toast("Indique un montant");
+
+        return;
+
+    }
+
+    data.usage.savings =
+        value;
+
+    document.getElementById("savingsInput").value = "";
+
+    saveData();
+
+    renderUsage();
+
+    toast(`Épargne : ${formatEuro(value)}`);
+
+}
+
+
+
+function setOrderPrice() {
+
+    const value =
+        readNumberInput("orderPriceInput");
+
+    if (
+        Number.isNaN(value) ||
+        (value !== null && value < 0)
+    ) {
+
+        toast("Montant invalide");
+
+        return;
+
+    }
+
+    data.usage.orderPriceOverride =
+        value;
+
+    document.getElementById("orderPriceInput").value = "";
+
+    saveData();
+
+    renderUsage();
+
+    toast(
+        value === null
+        ? "Prix estimé utilisé"
+        : `Prix de la commande : ${formatEuro(value)}`
+    );
+
+}
+
+
+
+function placeOrder() {
+
+    const u =
+        data.usage;
+
+    const stats =
+        getUsageStats();
+
+    const plan =
+        getOrderPlan(stats);
+
+    const price =
+        u.orderPriceOverride !== null
+        ? u.orderPriceOverride
+        : (plan ? plan.total : 0);
+
+    if (
+        !confirm(
+            `Enregistrer une commande de ${formatEuro(price)} ?\n\n` +
+            "Ce montant sera retiré de ton épargne."
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    let addedBaseMl = 0;
+    let addedBoosters = 0;
+    let addedCoils = 0;
+
+    const stockLines =
+        plan
+        ? plan.lines.filter(l =>
+            l.units > 0 &&
+            (l.addBaseMl || l.addBoosters || l.addCoils)
+          )
+        : [];
+
+    const aromaLine =
+        plan
+        ? plan.lines.find(l => l.key === "aroma" && l.units > 0)
+        : null;
+
+    if (
+        stockLines.length &&
+        confirm(
+            "Ajouter aussi la commande aux stocks ?\n\n" +
+            stockLines.map(l => `• ${l.label.replace(/^\S+\s/, "")} : ${l.detail}`).join("\n") +
+            (aromaLine ? "\n\nLes arômes sont à ajouter depuis l'onglet Stocks (choix du parfum)." : "")
+        )
+    ) {
+
+        for (const l of stockLines) {
+
+            addedBaseMl += l.addBaseMl || 0;
+            addedBoosters += l.addBoosters || 0;
+            addedCoils += l.addCoils || 0;
+
+        }
+
+        data.baseMl += addedBaseMl;
+        data.boosters += addedBoosters;
+        u.coilStock += addedCoils;
+
+    }
+
+
+    u.events.unshift({
+
+        id: uid(),
+        type: "order",
+        date: new Date().toISOString(),
+
+        ml: 0,
+        cost: 0,
+        costLiquid: 0,
+        costCoil: 0,
+        costBattery: 0,
+
+        amount: price,
+
+        fromStock: false,
+        readyUsed: 0,
+        savingsApplied: false,
+
+        addedBaseMl,
+        addedBoosters,
+        addedCoils
+
+    });
+
+    u.savings -=
+        price;
+
+    u.orderPriceOverride =
+        null;
+
+    saveData();
+
+    renderAll();
+
+    toast(`🛒 Commande enregistrée · ${formatEuro(price)}`);
+
+}
+
+
+
+function renderOrder(
+    stats
+) {
+
+    const u =
+        data.usage;
+
+    const plan =
+        getOrderPlan(stats);
+
+    const proj =
+        getSavingsProjection(stats, plan);
+
+    const headline =
+        document.getElementById("orderHeadline");
+
+    const details =
+        document.getElementById("orderDetails");
+
+
+    document.getElementById("readyLiquidInput").placeholder =
+        `Actuel : ${formatNumber(u.readyLiquidMl)} ml`;
+
+
+    /* ----- Pas de rythme ----- */
+
+    if (!plan) {
+
+        headline.textContent = "—";
+        headline.className = "order-date";
+
+        setText("orderSubline", "");
+
+        document.getElementById("orderNotice").innerHTML = `
+            <div class="notice warning-notice">
+                Pas encore assez de recharges pour mesurer ton rythme.
+                Indique un <strong>rythme de consommation</strong>
+                dans « Réglages & prix » pour planifier la commande.
+            </div>
+        `;
+
+        details.style.display = "none";
+
+    }
+
+    else {
+
+        details.style.display = "";
+
+
+        /* ----- Date de commande ----- */
+
+        if (plan.orderNow) {
+
+            headline.textContent =
+                "Commande maintenant";
+
+            headline.className =
+                "order-date bad";
+
+        }
+
+        else {
+
+            headline.textContent =
+                `Commander avant le ${formatDay(plan.orderDate)}`;
+
+            headline.className =
+                plan.daysUntilOrder <= 3
+                ? "order-date warning"
+                : "order-date";
+
+        }
+
+        const limitingName =
+            plan.limiting.label.replace(/^\S+\s/, "").toLowerCase();
+
+        setText(
+            "orderSubline",
+            (plan.orderNow ? "" : `Dans ${formatDuration(plan.daysUntilOrder)} · `) +
+            `rupture de ${limitingName} vers le ${formatDay(plan.exhaustDate)} · ` +
+            `livraison ${formatNumber(u.deliveryDays)} j + marge ${formatNumber(u.bufferDays)} j`
+        );
+
+        document.getElementById("orderNotice").innerHTML =
+            plan.ruptureBeforeDelivery
+            ? `
+                <div class="notice danger-notice">
+                    ⚠️ Avec ${formatNumber(u.deliveryDays)} jours de livraison,
+                    tu risques d'être à court de ${limitingName}
+                    avant de recevoir la commande.
+                </div>
+              `
+            : "";
+
+
+        /* ----- Couverture ----- */
+
+        const minimum =
+            u.deliveryDays + u.bufferDays;
+
+        document.getElementById("orderCoverage").innerHTML =
+
+            resultRow(
+                "🧪 Liquide déjà préparé",
+                `${formatNumber(u.readyLiquidMl)} ml`
+            )
+
+            +
+
+            plan.items.map(item => {
+
+                const cls =
+                    item.days < u.deliveryDays ? "bad"
+                    : item.days < minimum ? "warning"
+                    : "good";
+
+                const value =
+                    Number.isFinite(item.days)
+                    ? `${formatDay(new Date(Date.now() + item.days * DAY_MS))} (${formatNumber(item.days, 0)} j)`
+                    : "—";
+
+                return resultRow(
+                    item.label +
+                    (item === plan.limiting ? ' <span class="small">· limitant</span>' : ""),
+                    value,
+                    cls
+                );
+
+            })
+            .join("");
+
+
+        /* ----- Contenu ----- */
+
+        const wanted =
+            plan.lines.filter(l => l.units > 0);
+
+        document.getElementById("orderLines").innerHTML =
+
+            (
+                wanted.length
+
+                ?
+
+                wanted.map(l =>
+                    resultRow(
+                        `${l.label}<div class="list-meta">${l.detail}</div>`,
+                        formatEuro(l.price)
+                    )
+                )
+                .join("")
+
+                +
+
+                (
+                    plan.shipping > 0
+                    ? resultRow("📮 Frais de port", formatEuro(plan.shipping))
+                    : ""
+                )
+
+                +
+
+                resultRow(
+                    "<strong>Total estimé</strong>",
+                    `<span class="good">${formatEuro(plan.total)}</span>`
+                )
+
+                :
+
+                resultRow(
+                    "Rien à commander",
+                    "—"
+                )
+            )
+
+            +
+
+            `<div class="list-meta" style="padding:10px 0 4px">
+                De quoi tenir jusqu'à la livraison puis
+                ${formatNumber(u.orderCoverDays)} jours,
+                à ${formatNumber(plan.rate)} ml/jour.
+                Batterie non incluse.
+            </div>`;
+
+    }
+
+
+    /* ----- Épargne ----- */
+
+    setText(
+        "savingsAmount",
+        formatEuro(u.savings)
+    );
+
+    document.getElementById("savingsAmount").className =
+        "amount-due" + (u.savings < 0 ? " bad" : "");
+
+    document.getElementById("savingsInput").placeholder =
+        `Actuel : ${formatNumber(u.savings, 2)}`;
+
+    let rows =
+
+        resultRow(
+            "Épargne actuelle",
+            formatEuro(u.savings)
+        )
+
+        +
+
+        resultRow(
+            "+ À reporter (déjà vapé)",
+            formatEuro(stats.due.amount)
+        );
+
+    if (plan) {
+
+        rows +=
+
+            resultRow(
+                `+ D'ici la commande (${formatNumber(plan.daysUntilOrder)} j)`,
+                formatEuro(proj.untilOrder)
+            )
+
+            +
+
+            resultRow(
+                plan.orderNow
+                ? "= Épargne disponible"
+                : `= Épargne au ${formatDay(plan.orderDate)}`,
+                `<strong>${formatEuro(proj.projected)}</strong>`
+            );
+
+    }
+
+    if (proj.orderPrice !== null) {
+
+        rows +=
+
+            resultRow(
+                `− Commande (${u.orderPriceOverride !== null ? "prix indiqué" : "estimée"})`,
+                formatEuro(proj.orderPrice)
+            )
+
+            +
+
+            resultRow(
+                proj.balance >= 0 ? "Reste après commande" : "Il manquera",
+                formatEuro(Math.abs(proj.balance)),
+                proj.balance >= 0 ? "good" : "bad"
+            );
+
+    }
+
+    if (proj.costPerDay) {
+
+        rows +=
+            resultRow(
+                "Épargne par jour",
+                formatEuro(proj.costPerDay)
+            );
+
+    }
+
+    document.getElementById("savingsProjection").innerHTML =
+        rows;
+
+    document.getElementById("orderPriceInput").placeholder =
+        plan ? `Estimé : ${formatNumber(plan.total, 2)}` : "Ex : 45";
+
+    document.getElementById("orderPriceHint").textContent =
+        u.orderPriceOverride !== null
+        ? `Prix indiqué : ${formatEuro(u.orderPriceOverride)}. Valide un champ vide pour revenir à l'estimation.`
+        : "Laisse vide pour utiliser l'estimation.";
+
+
+    return plan;
+
+}
+
+
+
 function renderUsageJournal() {
 
     const container =
@@ -10131,7 +11557,8 @@ function renderUsageJournal() {
     const icons = {
         refill: "💧",
         coil: "🔧",
-        report: "✅"
+        report: "✅",
+        order: "🛒"
     };
 
     container.innerHTML =
@@ -10152,6 +11579,22 @@ function renderUsageJournal() {
 
                 title = "Nouvelle résistance";
                 meta += e.fromStock ? " · prise dans le stock" : "";
+
+            }
+
+            else if (e.type === "order") {
+
+                title = `Commande : ${formatEuro(e.amount)}`;
+
+                const added = [];
+
+                if (e.addedBaseMl) added.push(`${formatNumber(e.addedBaseMl)} ml base`);
+                if (e.addedBoosters) added.push(`${e.addedBoosters} boosters`);
+                if (e.addedCoils) added.push(`${e.addedCoils} résist.`);
+
+                meta += added.length
+                    ? ` · ${added.join(", ")}`
+                    : " · retirée de l'épargne";
 
             }
 
@@ -10279,6 +11722,29 @@ document
         }
 
     });
+
+
+[
+    ["readyLiquidInput", "setReadyLiquid"],
+    ["savingsInput", "setSavings"],
+    ["orderPriceInput", "setOrderPrice"]
+]
+.forEach(([id, fn]) => {
+
+    document
+        .getElementById(id)
+        .addEventListener("keydown", event => {
+
+            if (event.key === "Enter") {
+
+                event.preventDefault();
+                window[fn]();
+
+            }
+
+        });
+
+});
 
 
 document
