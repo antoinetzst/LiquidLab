@@ -1820,6 +1820,147 @@ td {
 
 
 /* =========================================================
+   SUIVI (RÉSISTANCE / RECHARGES / COÛT)
+========================================================= */
+
+
+.big-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.big-action {
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 20px;
+    padding: 20px 12px;
+    color: white;
+    font-weight: 800;
+    font-size: 15px;
+    line-height: 1.25;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transition: .15s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.big-action .emoji {
+    font-size: 30px;
+}
+
+.big-action small {
+    color: var(--muted);
+    font-weight: 650;
+    font-size: 12px;
+}
+
+.big-action.refill {
+    background: linear-gradient(135deg, rgba(100,155,255,.26), rgba(155,110,255,.18));
+}
+
+.big-action.coil {
+    background: linear-gradient(135deg, rgba(255,185,90,.22), rgba(255,110,120,.14));
+}
+
+.big-action:hover {
+    transform: translateY(-1px);
+}
+
+.big-action:active {
+    transform: scale(.97);
+}
+
+.wear-track {
+    height: 12px;
+    border-radius: 20px;
+    background: rgba(255,255,255,.08);
+    overflow: hidden;
+    margin: 12px 0 8px;
+}
+
+.wear-fill {
+    height: 100%;
+    width: 0;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--green), #3fa890);
+    transition: width .35s ease;
+}
+
+.wear-fill.warn {
+    background: linear-gradient(90deg, var(--orange), #ff9a4d);
+}
+
+.wear-fill.over {
+    background: linear-gradient(90deg, var(--red), #ff4d6a);
+}
+
+.amount-due {
+    font-size: 44px;
+    font-weight: 850;
+    letter-spacing: -1.5px;
+}
+
+.inline-form {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    margin-top: 15px;
+}
+
+.inline-form .field {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.event-icon {
+    width: 38px;
+    height: 38px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: rgba(255,255,255,.07);
+    font-size: 18px;
+}
+
+.event-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.tab-badge {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 0 10px var(--orange);
+    display: none;
+}
+
+.tab-badge.show {
+    display: inline-block;
+}
+
+.tab-badge.over {
+    background: var(--red);
+    box-shadow: 0 0 10px var(--red);
+}
+
+.settings-group-title {
+    margin: 18px 0 10px;
+    color: #dce5f7;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+
+/* =========================================================
    MOBILE
 ========================================================= */
 
@@ -1904,6 +2045,14 @@ td {
 
     }
 
+
+    .two-cols.keep {
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
 }
 
 </style>
@@ -1972,6 +2121,19 @@ td {
         data-page="create">
 
         🧪 Créer
+
+    </button>
+
+
+    <button
+        class="tab"
+        data-page="usage">
+
+        🔧 Suivi
+
+        <span
+            class="tab-badge"
+            id="usageBadge"></span>
 
     </button>
 
@@ -2597,6 +2759,352 @@ td {
 
 
 <!-- =====================================================
+     SUIVI : RÉSISTANCE, RECHARGES, COÛT
+===================================================== -->
+
+
+<section
+    class="page"
+    id="usage">
+
+<div class="grid">
+
+
+<!-- ---------- Résistance ---------- -->
+
+<div class="card glass span-7">
+
+    <div class="card-title">
+
+        <h2>
+            Résistance en cours
+        </h2>
+
+        <div class="icon-box">
+            🔧
+        </div>
+
+    </div>
+
+
+    <div class="big-actions">
+
+        <button
+            class="big-action refill"
+            onclick="logRefill()">
+
+            <span class="emoji">💧</span>
+
+            J'ai rechargé
+
+            <small id="refillBtnInfo">+2 ml</small>
+
+        </button>
+
+
+        <button
+            class="big-action coil"
+            onclick="logCoilChange()">
+
+            <span class="emoji">🔧</span>
+
+            J'ai changé la résistance
+
+            <small id="coilBtnInfo">Stock : 0</small>
+
+        </button>
+
+    </div>
+
+
+    <div
+        class="metric"
+        id="coilWearDisplay">
+
+        0
+        <small>/ 30 ml</small>
+
+    </div>
+
+
+    <div class="wear-track">
+
+        <div
+            class="wear-fill"
+            id="coilWearFill"></div>
+
+    </div>
+
+
+    <div
+        class="stock-info"
+        id="coilWearInfo">
+    </div>
+
+
+    <div
+        class="result-box"
+        id="coilStats">
+    </div>
+
+
+    <div id="coilAdvice"></div>
+
+
+    <div class="inline-form">
+
+        <div class="field">
+
+            <label>
+                Recharge d'une autre quantité (ml)
+            </label>
+
+            <input
+                id="customRefillMl"
+                type="number"
+                inputmode="decimal"
+                step="0.1"
+                min="0"
+                placeholder="Ex : 1,5">
+
+        </div>
+
+
+        <button
+            class="btn btn-secondary"
+            onclick="logCustomRefill()">
+
+            Ajouter
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- ---------- À reporter ---------- -->
+
+<div class="card glass span-5">
+
+    <div class="card-title">
+
+        <h2>
+            À reporter
+        </h2>
+
+        <div class="icon-box">
+            💶
+        </div>
+
+    </div>
+
+
+    <div
+        class="amount-due"
+        id="dueAmount">
+
+        0,00 €
+
+    </div>
+
+
+    <div
+        class="stock-info"
+        id="dueInfo">
+    </div>
+
+
+    <div
+        class="result-box"
+        id="dueBreakdown">
+    </div>
+
+
+    <button
+        class="btn btn-success full"
+        style="margin-top:15px"
+        id="reportBtn"
+        onclick="markReported()">
+
+        ✅ J'ai reporté cette somme
+
+    </button>
+
+
+    <div
+        class="notice"
+        id="lastReportInfo">
+    </div>
+
+</div>
+
+
+
+<!-- ---------- Journal ---------- -->
+
+<div class="card glass span-7">
+
+    <div class="card-title">
+
+        <h2>
+            Journal
+        </h2>
+
+        <button
+            class="btn btn-secondary"
+            onclick="undoLastUsageEvent()">
+
+            ↩︎ Annuler le dernier
+
+        </button>
+
+    </div>
+
+
+    <div
+        class="list"
+        id="usageJournal">
+    </div>
+
+</div>
+
+
+
+<!-- ---------- Réglages & prix ---------- -->
+
+<div class="card glass span-5">
+
+    <div class="card-title">
+
+        <h2>
+            Réglages & prix
+        </h2>
+
+        <div class="icon-box">
+            ⚙️
+        </div>
+
+    </div>
+
+
+    <div class="two-cols keep">
+
+        <div class="field">
+            <label>Recharge (ml)</label>
+            <input id="setTankMl" type="number" inputmode="decimal" step="0.1" min="0.1">
+        </div>
+
+        <div class="field">
+            <label>Vie résistance (ml)</label>
+            <input id="setCoilLifeMl" type="number" inputmode="decimal" step="1" min="1">
+        </div>
+
+    </div>
+
+
+    <div class="field">
+        <label>Résistances en stock</label>
+        <input id="setCoilStock" type="number" inputmode="numeric" step="1" min="0">
+    </div>
+
+
+    <div class="settings-group-title">🍓 Arôme</div>
+
+    <div class="two-cols keep">
+        <div class="field">
+            <label>Prix (€)</label>
+            <input id="setAromaPrice" type="number" inputmode="decimal" step="0.01" min="0">
+        </div>
+        <div class="field">
+            <label>Flacon (ml)</label>
+            <input id="setAromaBottleMl" type="number" inputmode="decimal" step="1" min="1">
+        </div>
+    </div>
+
+
+    <div class="settings-group-title">💧 Base neutre</div>
+
+    <div class="two-cols keep">
+        <div class="field">
+            <label>Prix (€)</label>
+            <input id="setBasePrice" type="number" inputmode="decimal" step="0.01" min="0">
+        </div>
+        <div class="field">
+            <label>Contenance (ml)</label>
+            <input id="setBaseBottleMl" type="number" inputmode="decimal" step="1" min="1">
+        </div>
+    </div>
+
+
+    <div class="settings-group-title">⚡ Boosters</div>
+
+    <div class="two-cols keep">
+        <div class="field">
+            <label>Prix du lot (€)</label>
+            <input id="setBoosterPackPrice" type="number" inputmode="decimal" step="0.01" min="0">
+        </div>
+        <div class="field">
+            <label>Boosters par lot</label>
+            <input id="setBoosterPackCount" type="number" inputmode="numeric" step="1" min="1">
+        </div>
+    </div>
+
+
+    <div class="settings-group-title">🔧 Résistances</div>
+
+    <div class="two-cols keep">
+        <div class="field">
+            <label>Prix du lot (€)</label>
+            <input id="setCoilPackPrice" type="number" inputmode="decimal" step="0.01" min="0">
+        </div>
+        <div class="field">
+            <label>Résistances par lot</label>
+            <input id="setCoilPackCount" type="number" inputmode="numeric" step="1" min="1">
+        </div>
+    </div>
+
+
+    <div class="settings-group-title">🔋 Batterie</div>
+
+    <div class="two-cols keep">
+        <div class="field">
+            <label>Prix (€)</label>
+            <input id="setBatteryPrice" type="number" inputmode="decimal" step="0.01" min="0">
+        </div>
+        <div class="field">
+            <label>Durée de vie (ml)</label>
+            <input id="setBatteryLifeMl" type="number" inputmode="decimal" step="10" min="1">
+        </div>
+    </div>
+
+
+    <button
+        class="btn btn-primary full"
+        onclick="saveUsageSettings()">
+
+        Enregistrer les réglages
+
+    </button>
+
+
+    <div
+        class="result-box"
+        style="margin-top:15px"
+        id="costPerMlBox">
+    </div>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
      HISTORY
 ===================================================== -->
 
@@ -3066,7 +3574,7 @@ td {
         sous licence MIT.
         Ce site a été développé avec l'aide de l'intelligence artificielle.
     </p>
-        <p>LiquidLab 2.3.2</p>
+        <p>LiquidLab 2.4.0</p>
 
 </footer>
     
@@ -3146,9 +3654,61 @@ const DEFAULT_DATA = {
     lastSave:
         null,
   lastNicotine:
-    3
+    3,
+
+    usage:
+        null
 
 };
+
+
+/*
+    Suivi de consommation :
+    recharges, changements de résistance
+    et sommes reportées.
+
+    Prix par défaut repris du tableur
+    "Calcul épargne quotidienne".
+*/
+
+const DEFAULT_USAGE = {
+
+    tankMl: 2,
+
+    coilLifeMl: 30,
+
+    coilStock: 0,
+
+    prices: {
+
+        aromaPrice: 11.9,
+        aromaBottleMl: 30,
+
+        basePrice: 9.9,
+        baseBottleMl: 1000,
+
+        boosterPackPrice: 7.5,
+        boosterPackCount: 10,
+
+        coilPackPrice: 13.9,
+        coilPackCount: 5,
+
+        batteryPrice: 13,
+        batteryLifeMl: 1500
+
+    },
+
+    events: []
+
+};
+
+
+DEFAULT_DATA.usage =
+    JSON.parse(
+        JSON.stringify(
+            DEFAULT_USAGE
+        )
+    );
 
 
 let data =
@@ -3404,7 +3964,111 @@ function normalizeData(input) {
         lastSave:
 
             input.lastSave ||
-            null
+            null,
+
+        usage:
+
+            normalizeUsage(
+                input.usage
+            )
+
+    };
+
+}
+
+
+
+function normalizeUsage(input) {
+
+    const u =
+        input && typeof input === "object"
+        ? input
+        : {};
+
+    const p =
+        u.prices && typeof u.prices === "object"
+        ? u.prices
+        : {};
+
+    const num = (value, fallback, min = 0) => {
+
+        const n = Number(value);
+
+        return Number.isFinite(n) && n >= min
+            ? n
+            : fallback;
+
+    };
+
+    const prices = {};
+
+    for (const key of Object.keys(DEFAULT_USAGE.prices)) {
+
+        const isQuantity =
+            /Ml$|Count$/.test(key);
+
+        prices[key] =
+            num(
+                p[key],
+                DEFAULT_USAGE.prices[key],
+                isQuantity ? 0.0001 : 0
+            );
+
+    }
+
+    const types =
+        ["refill", "coil", "report"];
+
+    return {
+
+        tankMl:
+            num(u.tankMl, DEFAULT_USAGE.tankMl, 0.01),
+
+        coilLifeMl:
+            num(u.coilLifeMl, DEFAULT_USAGE.coilLifeMl, 0.01),
+
+        coilStock:
+            Math.floor(num(u.coilStock, 0)),
+
+        prices,
+
+        events:
+
+            Array.isArray(u.events)
+
+            ?
+
+            u.events
+                .filter(e =>
+                    e &&
+                    types.includes(e.type) &&
+                    !isNaN(new Date(e.date))
+                )
+                .map(e => ({
+
+                    id: e.id || uid(),
+                    type: e.type,
+                    date: e.date,
+
+                    ml: num(e.ml, 0),
+
+                    cost: num(e.cost, 0),
+                    costLiquid: num(e.costLiquid, 0),
+                    costCoil: num(e.costCoil, 0),
+                    costBattery: num(e.costBattery, 0),
+
+                    amount: num(e.amount, 0),
+
+                    fromStock: e.fromStock === true
+
+                }))
+                .sort((a, b) =>
+                    new Date(b.date) - new Date(a.date)
+                )
+
+            :
+
+            []
 
     };
 
@@ -3608,6 +4272,16 @@ if (
 ) {
 
     renderHistory();
+
+}
+
+
+if (
+    tab.dataset.page ===
+    "usage"
+) {
+
+    renderUsage();
 
 }
 
@@ -7931,6 +8605,21 @@ function showImportPreview(
             </div>
 
 
+            <div class="result-row">
+
+                <span class="muted">
+                    Suivi (recharges, résistances…)
+                </span>
+
+                <strong>
+
+                    ${imported.usage.events.length}
+
+                </strong>
+
+            </div>
+
+
             ${
                 exportDate
 
@@ -8338,6 +9027,1185 @@ function escapeHtml(
 
 
 /* =========================================================
+   SUIVI : RÉSISTANCE, RECHARGES, COÛT
+========================================================= */
+
+
+const DAY_MS =
+    86400000;
+
+
+function formatEuro(
+    value
+) {
+
+    return Number(
+        value || 0
+    )
+    .toLocaleString(
+        "fr-FR",
+        {
+            style: "currency",
+            currency: "EUR"
+        }
+    );
+
+}
+
+
+function formatShortDate(
+    iso
+) {
+
+    return new Date(iso)
+        .toLocaleString(
+            "fr-FR",
+            {
+                day: "2-digit",
+                month: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+
+}
+
+
+function daysBetween(
+    fromIso,
+    to = Date.now()
+) {
+
+    return Math.max(
+        0,
+        (new Date(to) - new Date(fromIso)) / DAY_MS
+    );
+
+}
+
+
+function formatDuration(
+    days
+) {
+
+    if (days < 1) {
+
+        const hours =
+            Math.round(days * 24);
+
+        return hours <= 1
+            ? "moins d'une heure"
+            : `${hours} h`;
+
+    }
+
+    const rounded =
+        Math.round(days);
+
+    return `${rounded} jour${rounded > 1 ? "s" : ""}`;
+
+}
+
+
+
+/*
+    Coût par ml :
+
+    - liquide : d'après la dernière préparation
+      conservée (sinon la recette du tableur :
+      180 ml base + 4 boosters + 30 ml arôme = 250 ml)
+    - résistance : prix unitaire / durée de vie
+    - batterie : prix / durée de vie
+*/
+
+function getUnitCosts() {
+
+    const u =
+        data.usage;
+
+    const p =
+        u.prices;
+
+
+    const basePerMl =
+        p.basePrice / p.baseBottleMl;
+
+    const aromaPerMl =
+        p.aromaPrice / p.aromaBottleMl;
+
+    const boosterUnit =
+        p.boosterPackPrice / p.boosterPackCount;
+
+
+    const lastMix =
+
+        data.history.find(h =>
+            h.status === "Conservé" &&
+            Number(h.finalVolume) > 0
+        )
+
+        ||
+
+        data.history.find(h =>
+            Number(h.finalVolume) > 0
+        );
+
+
+    const recipe =
+
+        lastMix
+
+        ?
+
+        {
+            base: Number(lastMix.baseMl) || 0,
+            boosters: Number(lastMix.boosterCount) || 0,
+            aroma: Number(lastMix.aromaMl) || 0,
+            volume: Number(lastMix.finalVolume),
+            label:
+                `ta dernière préparation (${escapeHtml(lastMix.aromaName || "arôme")}, ` +
+                `${formatNumber(lastMix.finalVolume)} ml)`
+        }
+
+        :
+
+        {
+            base: 180,
+            boosters: 4,
+            aroma: 30,
+            volume: 250,
+            label:
+                "la recette par défaut (180 ml base, 4 boosters, 30 ml arôme)"
+        };
+
+
+    const liquid =
+
+        (
+            recipe.base * basePerMl +
+            recipe.boosters * boosterUnit +
+            recipe.aroma * aromaPerMl
+        )
+        / recipe.volume;
+
+
+    const coil =
+        p.coilPackPrice / p.coilPackCount / u.coilLifeMl;
+
+
+    const battery =
+        p.batteryPrice / p.batteryLifeMl;
+
+
+    return {
+
+        liquid,
+        coil,
+        battery,
+
+        total:
+            liquid + coil + battery,
+
+        recipeLabel:
+            recipe.label
+
+    };
+
+}
+
+
+
+function getUsageStats() {
+
+    const u =
+        data.usage;
+
+    const events =
+        u.events;   // du plus récent au plus ancien
+
+    const refills =
+        list => list.filter(e => e.type === "refill");
+
+    const sumMl =
+        list => refills(list).reduce((t, e) => t + e.ml, 0);
+
+
+    /* ----- Résistance en cours ----- */
+
+    const coilIndex =
+        events.findIndex(e => e.type === "coil");
+
+    const lastCoil =
+        coilIndex === -1 ? null : events[coilIndex];
+
+    const sinceCoil =
+        coilIndex === -1 ? events : events.slice(0, coilIndex);
+
+    const mlSinceCoil =
+        sumMl(sinceCoil);
+
+    const refillsSinceCoil =
+        refills(sinceCoil).length;
+
+    const wear =
+        mlSinceCoil / u.coilLifeMl;
+
+
+    /* ----- Durée de vie réelle moyenne ----- */
+
+    const lives = [];
+
+    let current = null;
+
+    for (const e of [...events].reverse()) {
+
+        if (e.type === "coil") {
+
+            if (current !== null && current > 0) {
+                lives.push(current);
+            }
+
+            current = 0;
+
+        }
+
+        else if (e.type === "refill" && current !== null) {
+
+            current += e.ml;
+
+        }
+
+    }
+
+    const averageLife =
+        lives.length
+        ? lives.reduce((t, l) => t + l, 0) / lives.length
+        : null;
+
+
+    /* ----- Rythme de consommation (30 derniers jours) ----- */
+
+    const windowStart =
+        Date.now() - 30 * DAY_MS;
+
+    const recentRefills =
+        refills(events).filter(e =>
+            new Date(e.date) >= windowStart
+        );
+
+    let mlPerDay = null;
+
+    if (recentRefills.length >= 3) {
+
+        const oldest =
+            recentRefills[recentRefills.length - 1];
+
+        const span =
+            Math.max(1, daysBetween(oldest.date));
+
+        mlPerDay =
+            recentRefills.reduce((t, e) => t + e.ml, 0) / span;
+
+    }
+
+    const remainingMl =
+        Math.max(0, u.coilLifeMl - mlSinceCoil);
+
+    const daysLeft =
+        mlPerDay ? remainingMl / mlPerDay : null;
+
+    const refillsLeft =
+        Math.ceil(remainingMl / u.tankMl);
+
+
+    /* ----- Depuis le dernier report ----- */
+
+    const reportIndex =
+        events.findIndex(e => e.type === "report");
+
+    const lastReport =
+        reportIndex === -1 ? null : events[reportIndex];
+
+    const sinceReport =
+        refills(
+            reportIndex === -1 ? events : events.slice(0, reportIndex)
+        );
+
+    const due = {
+
+        amount:
+            sinceReport.reduce((t, e) => t + e.cost, 0),
+
+        liquid:
+            sinceReport.reduce((t, e) => t + e.costLiquid, 0),
+
+        coil:
+            sinceReport.reduce((t, e) => t + e.costCoil, 0),
+
+        battery:
+            sinceReport.reduce((t, e) => t + e.costBattery, 0),
+
+        ml:
+            sinceReport.reduce((t, e) => t + e.ml, 0),
+
+        refills:
+            sinceReport.length,
+
+        since:
+            lastReport
+            ? lastReport.date
+            : (sinceReport.length ? sinceReport[sinceReport.length - 1].date : null)
+
+    };
+
+
+    return {
+
+        lastCoil,
+        mlSinceCoil,
+        refillsSinceCoil,
+        wear,
+        remainingMl,
+        refillsLeft,
+        lives,
+        averageLife,
+        mlPerDay,
+        daysLeft,
+        lastReport,
+        due
+
+    };
+
+}
+
+
+
+/* ---------- Actions ---------- */
+
+
+function logRefill(
+    customMl
+) {
+
+    const ml =
+        Number(
+            customMl ?? data.usage.tankMl
+        );
+
+    if (!(ml > 0)) {
+
+        toast("Quantité invalide");
+
+        return;
+
+    }
+
+    const before =
+        getUsageStats().wear;
+
+    const c =
+        getUnitCosts();
+
+    data.usage.events.unshift({
+
+        id: uid(),
+        type: "refill",
+        date: new Date().toISOString(),
+
+        ml,
+
+        cost: ml * c.total,
+        costLiquid: ml * c.liquid,
+        costCoil: ml * c.coil,
+        costBattery: ml * c.battery,
+
+        amount: 0,
+        fromStock: false
+
+    });
+
+    saveData();
+
+    renderUsage();
+
+    const after =
+        getUsageStats().wear;
+
+    if (before < 1 && after >= 1) {
+
+        toast("🔧 Résistance arrivée en fin de vie estimée");
+
+    }
+
+    else {
+
+        toast(`💧 +${formatNumber(ml)} ml · ${formatEuro(ml * c.total)}`);
+
+    }
+
+}
+
+
+
+function logCustomRefill() {
+
+    const input =
+        document.getElementById("customRefillMl");
+
+    const ml =
+        Number(
+            String(input.value).replace(",", ".")
+        );
+
+    if (!(ml > 0)) {
+
+        toast("Indique une quantité en ml");
+
+        return;
+
+    }
+
+    logRefill(ml);
+
+    input.value = "";
+
+}
+
+
+
+function logCoilChange() {
+
+    const u =
+        data.usage;
+
+    const fromStock =
+        u.coilStock > 0;
+
+    if (fromStock) {
+
+        u.coilStock -= 1;
+
+    }
+
+    u.events.unshift({
+
+        id: uid(),
+        type: "coil",
+        date: new Date().toISOString(),
+
+        ml: 0,
+        cost: 0,
+        costLiquid: 0,
+        costCoil: 0,
+        costBattery: 0,
+        amount: 0,
+
+        fromStock
+
+    });
+
+    saveData();
+
+    renderUsage();
+
+    renderUsageSettings();
+
+    toast(
+        fromStock
+        ? `🔧 Résistance changée · ${u.coilStock} en stock`
+        : "🔧 Résistance changée (stock à 0)"
+    );
+
+}
+
+
+
+function markReported() {
+
+    const due =
+        getUsageStats().due;
+
+    if (due.refills === 0) {
+
+        toast("Rien à reporter pour l'instant");
+
+        return;
+
+    }
+
+    if (
+        !confirm(
+            `Confirmer le report de ${formatEuro(due.amount)} ?\n\n` +
+            "Le compteur repartira de zéro."
+        )
+    ) {
+
+        return;
+
+    }
+
+    data.usage.events.unshift({
+
+        id: uid(),
+        type: "report",
+        date: new Date().toISOString(),
+
+        ml: due.ml,
+        cost: 0,
+        costLiquid: 0,
+        costCoil: 0,
+        costBattery: 0,
+
+        amount: due.amount,
+
+        fromStock: false
+
+    });
+
+    saveData();
+
+    renderUsage();
+
+    toast(`✅ ${formatEuro(due.amount)} reporté`);
+
+}
+
+
+
+function removeUsageEvent(
+    id
+) {
+
+    const events =
+        data.usage.events;
+
+    const index =
+        events.findIndex(e => e.id === id);
+
+    if (index === -1) {
+
+        return;
+
+    }
+
+    const [removed] =
+        events.splice(index, 1);
+
+    if (
+        removed.type === "coil" &&
+        removed.fromStock
+    ) {
+
+        data.usage.coilStock += 1;
+
+    }
+
+    saveData();
+
+    renderUsage();
+
+    renderUsageSettings();
+
+    toast("Événement supprimé");
+
+}
+
+
+
+function undoLastUsageEvent() {
+
+    const last =
+        data.usage.events[0];
+
+    if (!last) {
+
+        toast("Rien à annuler");
+
+        return;
+
+    }
+
+    const labels = {
+        refill: `la recharge de ${formatNumber(last.ml)} ml`,
+        coil: "le changement de résistance",
+        report: `le report de ${formatEuro(last.amount)}`
+    };
+
+    if (
+        !confirm(`Annuler ${labels[last.type]} du ${formatShortDate(last.date)} ?`)
+    ) {
+
+        return;
+
+    }
+
+    removeUsageEvent(last.id);
+
+}
+
+
+
+function deleteUsageEvent(
+    id
+) {
+
+    if (
+        !confirm("Supprimer cet événement du journal ?")
+    ) {
+
+        return;
+
+    }
+
+    removeUsageEvent(id);
+
+}
+
+
+
+function useAverageCoilLife() {
+
+    const stats =
+        getUsageStats();
+
+    if (!stats.averageLife) {
+
+        return;
+
+    }
+
+    data.usage.coilLifeMl =
+        Math.round(stats.averageLife);
+
+    saveData();
+
+    renderUsageSettings();
+
+    renderUsage();
+
+    toast(`Durée de vie réglée sur ${data.usage.coilLifeMl} ml`);
+
+}
+
+
+
+function saveUsageSettings() {
+
+    const read = (id, min) => {
+
+        const value =
+            Number(
+                String(
+                    document.getElementById(id).value
+                ).replace(",", ".")
+            );
+
+        return Number.isFinite(value) && value >= min
+            ? value
+            : null;
+
+    };
+
+    const fields = {
+
+        tankMl: ["setTankMl", 0.01],
+        coilLifeMl: ["setCoilLifeMl", 1],
+        coilStock: ["setCoilStock", 0],
+
+        aromaPrice: ["setAromaPrice", 0],
+        aromaBottleMl: ["setAromaBottleMl", 0.01],
+
+        basePrice: ["setBasePrice", 0],
+        baseBottleMl: ["setBaseBottleMl", 0.01],
+
+        boosterPackPrice: ["setBoosterPackPrice", 0],
+        boosterPackCount: ["setBoosterPackCount", 1],
+
+        coilPackPrice: ["setCoilPackPrice", 0],
+        coilPackCount: ["setCoilPackCount", 1],
+
+        batteryPrice: ["setBatteryPrice", 0],
+        batteryLifeMl: ["setBatteryLifeMl", 1]
+
+    };
+
+    const values = {};
+
+    for (const [key, [id, min]] of Object.entries(fields)) {
+
+        const value =
+            read(id, min);
+
+        if (value === null) {
+
+            toast("Une valeur est invalide");
+
+            document.getElementById(id).focus();
+
+            return;
+
+        }
+
+        values[key] = value;
+
+    }
+
+    const u =
+        data.usage;
+
+    u.tankMl = values.tankMl;
+    u.coilLifeMl = values.coilLifeMl;
+    u.coilStock = Math.floor(values.coilStock);
+
+    for (const key of Object.keys(u.prices)) {
+
+        u.prices[key] = values[key];
+
+    }
+
+    saveData();
+
+    renderUsageSettings();
+
+    renderUsage();
+
+    toast("Réglages enregistrés");
+
+}
+
+
+
+/* ---------- Rendu ---------- */
+
+
+function renderUsageSettings() {
+
+    const u =
+        data.usage;
+
+    const p =
+        u.prices;
+
+    const set = (id, value) => {
+        document.getElementById(id).value = value;
+    };
+
+    set("setTankMl", u.tankMl);
+    set("setCoilLifeMl", u.coilLifeMl);
+    set("setCoilStock", u.coilStock);
+
+    set("setAromaPrice", p.aromaPrice);
+    set("setAromaBottleMl", p.aromaBottleMl);
+
+    set("setBasePrice", p.basePrice);
+    set("setBaseBottleMl", p.baseBottleMl);
+
+    set("setBoosterPackPrice", p.boosterPackPrice);
+    set("setBoosterPackCount", p.boosterPackCount);
+
+    set("setCoilPackPrice", p.coilPackPrice);
+    set("setCoilPackCount", p.coilPackCount);
+
+    set("setBatteryPrice", p.batteryPrice);
+    set("setBatteryLifeMl", p.batteryLifeMl);
+
+}
+
+
+
+function resultRow(
+    label,
+    value,
+    valueClass = ""
+) {
+
+    return `
+        <div class="result-row">
+            <span class="muted">${label}</span>
+            <span class="result-value ${valueClass}">${value}</span>
+        </div>
+    `;
+
+}
+
+
+
+function renderUsage() {
+
+    const u =
+        data.usage;
+
+    const s =
+        getUsageStats();
+
+    const c =
+        getUnitCosts();
+
+
+    /* ----- Boutons ----- */
+
+    setText(
+        "refillBtnInfo",
+        `+${formatNumber(u.tankMl)} ml · ${formatEuro(u.tankMl * c.total)}`
+    );
+
+    setText(
+        "coilBtnInfo",
+        `Stock : ${u.coilStock}`
+    );
+
+
+    /* ----- Usure ----- */
+
+    const percent =
+        Math.min(100, s.wear * 100);
+
+    const level =
+        s.wear >= 1 ? "over"
+        : s.wear >= .8 ? "warn"
+        : "";
+
+    document.getElementById("coilWearDisplay").innerHTML = `
+        ${formatNumber(s.mlSinceCoil)}
+        <small>/ ${formatNumber(u.coilLifeMl)} ml</small>
+    `;
+
+    const fill =
+        document.getElementById("coilWearFill");
+
+    fill.style.width =
+        `${percent}%`;
+
+    fill.className =
+        `wear-fill ${level}`;
+
+    setText(
+        "coilWearInfo",
+        s.lastCoil
+        ? `${Math.round(s.wear * 100)} % · posée le ${new Date(s.lastCoil.date).toLocaleDateString("fr-FR")} (il y a ${formatDuration(daysBetween(s.lastCoil.date))})`
+        : `${Math.round(s.wear * 100)} % · depuis le début du suivi`
+    );
+
+
+    /* ----- Statistiques ----- */
+
+    let estimate = "—";
+
+    if (s.wear >= 1) {
+
+        estimate = "À changer";
+
+    }
+
+    else if (s.daysLeft !== null) {
+
+        const date =
+            new Date(Date.now() + s.daysLeft * DAY_MS);
+
+        estimate =
+            `${date.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })} (~${formatDuration(s.daysLeft)})`;
+
+    }
+
+    document.getElementById("coilStats").innerHTML =
+
+        resultRow(
+            "Recharges sur cette résistance",
+            s.refillsSinceCoil
+        )
+
+        +
+
+        resultRow(
+            "Recharges restantes (estim.)",
+            s.wear >= 1 ? "0" : `≈ ${s.refillsLeft}`,
+            level === "over" ? "bad" : level === "warn" ? "warning" : "good"
+        )
+
+        +
+
+        resultRow(
+            "Changement prévu",
+            estimate,
+            s.wear >= 1 ? "bad" : ""
+        )
+
+        +
+
+        resultRow(
+            "Rythme (30 derniers jours)",
+            s.mlPerDay
+            ? `${formatNumber(s.mlPerDay)} ml/jour`
+            : "pas encore assez de données"
+        )
+
+        +
+
+        resultRow(
+            "Durée de vie réelle moyenne",
+            s.averageLife
+            ? `${formatNumber(s.averageLife, 0)} ml (${s.lives.length} résist.)`
+            : "—"
+        );
+
+
+    /* ----- Conseils ----- */
+
+    const advice = [];
+
+    if (!s.lastCoil) {
+
+        advice.push(`
+            <div class="notice">
+                ℹ️ Appuie sur <strong>« J'ai changé la résistance »</strong>
+                la prochaine fois que tu la changes :
+                le compteur d'usure partira de là.
+            </div>
+        `);
+
+    }
+
+    if (s.wear >= 1) {
+
+        advice.push(`
+            <div class="notice danger-notice">
+                🔥 Durée de vie estimée dépassée.
+                Si le goût devient brûlé, fade ou si le liquide
+                fonce/gargouille, change la résistance.
+            </div>
+        `);
+
+    }
+
+    else if (s.wear >= .8) {
+
+        advice.push(`
+            <div class="notice warning-notice">
+                ⏳ Bientôt à changer : environ
+                <strong>${s.refillsLeft} recharge${s.refillsLeft > 1 ? "s" : ""}</strong> restante${s.refillsLeft > 1 ? "s" : ""}.
+            </div>
+        `);
+
+    }
+
+    if (u.coilStock <= 1) {
+
+        advice.push(`
+            <div class="notice warning-notice">
+                📦 ${u.coilStock === 0 ? "Plus aucune résistance" : "Plus qu'une résistance"} en stock.
+            </div>
+        `);
+
+    }
+
+    if (
+        s.averageLife &&
+        s.lives.length >= 2 &&
+        Math.abs(s.averageLife - u.coilLifeMl) / u.coilLifeMl > .15
+    ) {
+
+        advice.push(`
+            <div class="notice">
+                📈 Tes résistances durent en moyenne
+                <strong>${formatNumber(s.averageLife, 0)} ml</strong>
+                (réglage actuel : ${formatNumber(u.coilLifeMl)} ml).
+                <div style="margin-top:10px">
+                    <button class="btn btn-secondary" onclick="useAverageCoilLife()">
+                        Utiliser ${formatNumber(s.averageLife, 0)} ml
+                    </button>
+                </div>
+            </div>
+        `);
+
+    }
+
+    document.getElementById("coilAdvice").innerHTML =
+        advice.join("");
+
+
+    /* ----- Badge de l'onglet ----- */
+
+    const badge =
+        document.getElementById("usageBadge");
+
+    badge.className =
+        "tab-badge" +
+        (s.wear >= .8 ? " show" : "") +
+        (s.wear >= 1 ? " over" : "");
+
+
+    /* ----- À reporter ----- */
+
+    const due =
+        s.due;
+
+    setText(
+        "dueAmount",
+        formatEuro(due.amount)
+    );
+
+    setText(
+        "dueInfo",
+        due.refills
+        ? `${due.refills} recharge${due.refills > 1 ? "s" : ""} · ${formatNumber(due.ml)} ml` +
+          (due.since ? ` · depuis ${formatDuration(daysBetween(due.since))}` : "")
+        : "Aucune recharge depuis le dernier report"
+    );
+
+    const perDay =
+        due.since && daysBetween(due.since) >= 1
+        ? due.amount / daysBetween(due.since)
+        : null;
+
+    document.getElementById("dueBreakdown").innerHTML =
+
+        resultRow("💧 Liquide", formatEuro(due.liquid))
+        +
+        resultRow("🔧 Résistance (amortie)", formatEuro(due.coil))
+        +
+        resultRow("🔋 Batterie (amortie)", formatEuro(due.battery))
+        +
+        resultRow(
+            "Moyenne par jour",
+            perDay !== null ? formatEuro(perDay) : "—"
+        );
+
+    document.getElementById("reportBtn").disabled =
+        due.refills === 0;
+
+    document.getElementById("lastReportInfo").innerHTML =
+        s.lastReport
+        ? `Dernier report : <strong>${formatEuro(s.lastReport.amount)}</strong>
+           le ${new Date(s.lastReport.date).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" })}`
+        : "Aucun report enregistré pour l'instant.";
+
+
+    /* ----- Coût par ml ----- */
+
+    document.getElementById("costPerMlBox").innerHTML =
+
+        resultRow("Liquide", `${formatEuro(c.liquid)} / ml`)
+        +
+        resultRow("Résistance", `${formatEuro(c.coil)} / ml`)
+        +
+        resultRow("Batterie", `${formatEuro(c.battery)} / ml`)
+        +
+        resultRow("Total", `<span class="good">${formatEuro(c.total)} / ml</span>`)
+        +
+        resultRow("Soit pour 10 ml", formatEuro(c.total * 10))
+        +
+        `<div class="list-meta" style="padding:10px 0 4px">
+            Coût du liquide calculé d'après ${c.recipeLabel}.
+            Les recharges déjà enregistrées gardent le prix du moment.
+        </div>`;
+
+
+    /* ----- Journal ----- */
+
+    renderUsageJournal();
+
+}
+
+
+
+function renderUsageJournal() {
+
+    const container =
+        document.getElementById("usageJournal");
+
+    const events =
+        data.usage.events.slice(0, 10);
+
+    if (!events.length) {
+
+        container.innerHTML = `
+            <div class="empty">
+                Aucun événement pour l'instant.
+            </div>
+        `;
+
+        return;
+
+    }
+
+    const icons = {
+        refill: "💧",
+        coil: "🔧",
+        report: "✅"
+    };
+
+    container.innerHTML =
+
+        events.map(e => {
+
+            let title = "";
+            let meta = formatShortDate(e.date);
+
+            if (e.type === "refill") {
+
+                title = `Recharge +${formatNumber(e.ml)} ml`;
+                meta += ` · ${formatEuro(e.cost)}`;
+
+            }
+
+            else if (e.type === "coil") {
+
+                title = "Nouvelle résistance";
+                meta += e.fromStock ? " · prise dans le stock" : "";
+
+            }
+
+            else {
+
+                title = `Reporté : ${formatEuro(e.amount)}`;
+                meta += ` · ${formatNumber(e.ml)} ml`;
+
+            }
+
+            return `
+                <div class="list-item">
+
+                    <div class="event-main">
+
+                        <div class="event-icon">${icons[e.type]}</div>
+
+                        <div>
+                            <div class="list-name">${title}</div>
+                            <div class="list-meta">${meta}</div>
+                        </div>
+
+                    </div>
+
+                    <div class="list-actions">
+                        <button
+                            class="mini-btn danger"
+                            aria-label="Supprimer"
+                            onclick="deleteUsageEvent('${escapeHtml(e.id)}')">
+                            ✕
+                        </button>
+                    </div>
+
+                </div>
+            `;
+
+        })
+        .join("")
+
+        +
+
+        (
+            data.usage.events.length > 10
+            ? `<div class="list-meta" style="text-align:center">
+                   + ${data.usage.events.length - 10} événements plus anciens
+               </div>`
+            : ""
+        );
+
+}
+
+
+
+/* =========================================================
    RENDER ALL
 ========================================================= */
 
@@ -8349,6 +10217,10 @@ function renderAll() {
     renderAromaSelect();
 
     renderHistory();
+
+    renderUsageSettings();
+
+    renderUsage();
 
     renderLastSave();
 
@@ -8403,6 +10275,20 @@ document
 
             event.preventDefault();
             changeBoosters();
+
+        }
+
+    });
+
+
+document
+    .getElementById("customRefillMl")
+    .addEventListener("keydown", function(event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+            logCustomRefill();
 
         }
 
